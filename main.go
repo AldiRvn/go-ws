@@ -41,13 +41,13 @@ func main() {
 			}()
 
 			offset := 0
-			param := map[string]any{}
+			var param *map[string]any
 			var action string
 			for {
 				select {
 				case newParam := <-newParam:
 					log.Println("NEW PARAM!")
-					param = newParam //? Update value of param if new param available
+					param = &newParam //? Update value of param if new param available
 					paramAction, _ := newParam["action"].(string)
 					if paramAction != "" {
 						action = paramAction
@@ -55,7 +55,7 @@ func main() {
 				case <-ctx.Request.Context().Done():
 					return
 				default:
-					if len(param) == 0 { //? When request connect is made, param will always empty
+					if param == nil { //? When request connect is made, param will always empty
 						continue
 					}
 				}
